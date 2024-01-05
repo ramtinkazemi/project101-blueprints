@@ -4,9 +4,13 @@ all: check-aws init validate fmt tflint tfsec plan apply
 
 check-aws:
 	@echo "Checking AWS credentials..."
-	@aws sts get-caller-identity > /dev/null 2>&1; if [ $$? -gt 0 ]; then \
-		echo "An error occurred (ExpiredToken) when calling the GetCallerIdentity operation: The security token included in the request is expired"; \
-		exit 254; \
+	@AWS_IDENTITY=$$(aws sts get-caller-identity --output text --query 'Account'); \
+	AWS_USER=$$(aws sts get-caller-identity --output text --query 'Arn'); \
+	if [ -z "$$AWS_IDENTITY" ]; then \
+		echo "Failed to retrieve AWS identity."; \
+		exit 1; \
+	else \
+		echo "AWS User: $$AWS_USER"; \
 	fi
 
 init: check-aws
@@ -35,4 +39,4 @@ plan:
 	@terraform plan -input=false
 	@echo "\n\033[1;31m*** THIS PLAN IS NOT DEPLOYABLE. ***\033[0m"
 
-sure: check-aws init validate fmt tflint tfsec plan
+sure: check-aws validate fmt tflint tfsec plan
