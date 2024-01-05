@@ -11,8 +11,7 @@ check-aws:
 
 init: check-aws
 	@echo "Initializing Terraform..."
-	# @terraform init -backend=false -reconfigure -upgrade
-	@terraform init -backend=false 
+	@terraform init -backend=false -reconfigure -upgrade
 
 
 validate: init
