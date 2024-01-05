@@ -1,0 +1,19 @@
+# General system files
+.DS_Store*
+
+.vagrant
+.archive
+secret
+
+# Terraform files
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.auto.tfvars
+*.plan
+*.out
+*.tfgen
+crash.log
+
+.env.local
