@@ -14,12 +14,14 @@ module "vpc" {
 
   public_subnet_tags = {
     "Name"                                  = "${var.vpc_name}-public"
+    "tier"                                  = "public"
     "kubernetes.io/role/elb"                = "1"
     "kubernetes.io/cluster/${var.vpc_name}" = "shared"
   }
 
   private_subnet_tags = {
     "Name"                            = "${var.vpc_name}-private"
+    "tier"                            = "private"
     "kubernetes.io/role/internal-elb" = "1"
   }
 
