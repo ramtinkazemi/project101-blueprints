@@ -15,7 +15,7 @@ resource "aws_ecr_repository" "this" {
 }
 
 resource "aws_s3_bucket" "static_assets" {
-  bucket = "static-assets-${data.aws_caller_identity.current.account_id}-${data.aws_region.current.name}"
+  bucket = "static-assets-${local.aws_account_id}-${local.aws_region}"
   acl    = "private"
   versioning {
     enabled = true

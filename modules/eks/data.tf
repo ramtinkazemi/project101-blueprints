@@ -1,9 +1,6 @@
 data "aws_region" "current" {}
 data "aws_partition" "current" {}
 data "aws_caller_identity" "current" {}
-# data "aws_availability_zones" "available" {
-#   state = "available"
-# }
 
 resource "null_resource" "check_eks_cluster_ready" {
   triggers = {
@@ -15,7 +12,7 @@ resource "null_resource" "check_eks_cluster_ready" {
     TIME_OUT=600
     end=$((SECONDS+TIME_OUT))
     while [ $SECONDS -lt $end ]; do
-      status=$(aws eks describe-cluster --name ${local.cluster_name} --query 'cluster.status' --output text 2>/dev/null)
+      status=$(aws eks describe-cluster --name ${local.cluster_name} --region ${local.aws_region} --query 'cluster.status' --output text 2>/dev/null)
       [ "$status" = "ACTIVE" ] && exit 0
       sleep 5
     done

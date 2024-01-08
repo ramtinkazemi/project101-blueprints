@@ -12,7 +12,7 @@ resource "aws_iam_role" "eks_developer_role" {
         Effect = "Allow"
         Sid    = ""
         Principal = {
-          AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+          AWS = "arn:aws:iam::${local.aws_account_id}:root"
         }
       },
     ]

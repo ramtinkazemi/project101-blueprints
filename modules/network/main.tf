@@ -62,7 +62,7 @@ resource "aws_flow_log" "vpc_flow_log" {
 resource "aws_vpc_endpoint" "s3" {
   count             = var.enable_s3_gateway ? 1 : 0
   vpc_id            = module.vpc.vpc_id
-  service_name      = "com.amazonaws.${data.aws_region.current.name}.s3"
+  service_name      = "com.amazonaws.${local.aws_region}.s3"
   vpc_endpoint_type = "Gateway"
   route_table_ids   = module.vpc.public_route_table_ids
 }
@@ -70,7 +70,7 @@ resource "aws_vpc_endpoint" "s3" {
 resource "aws_vpc_endpoint" "interface_endpoints" {
   count               = length(var.vpce_interface_services)
   vpc_id              = module.vpc.vpc_id
-  service_name        = "com.amazonaws.${data.aws_region.current.name}.${var.vpce_interface_services[count.index]}"
+  service_name        = "com.amazonaws.${local.aws_region}.${var.vpce_interface_services[count.index]}"
   vpc_endpoint_type   = "Interface"
   subnet_ids          = module.vpc.private_subnets
   private_dns_enabled = true

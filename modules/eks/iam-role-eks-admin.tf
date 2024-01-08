@@ -12,7 +12,7 @@ resource "aws_iam_role" "eks_admin_role" {
         Effect = "Allow"
         Sid    = ""
         Principal = {
-          AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+          AWS = "arn:aws:iam::${local.aws_account_id}:root"
         }
       },
     ]
@@ -36,7 +36,7 @@ resource "aws_iam_role" "eks_admin_role" {
             "eks:*",
           ]
           Effect   = "Allow"
-          Resource = "arn:aws:eks:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:cluster/${local.cluster_name}"
+          Resource = "arn:aws:eks:${local.aws_region}:${local.aws_account_id}:cluster/${local.cluster_name}"
         },
       ]
     })
