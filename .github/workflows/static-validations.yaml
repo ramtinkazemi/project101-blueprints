@@ -63,7 +63,7 @@ jobs:
         run: make validate
 
       - name: Terraform Format Check
-        run: make fmt
+        run: make format
 
       - name: Install tflint
         run: |
