@@ -10,7 +10,7 @@ resource "aws_eks_fargate_profile" "eks_fargate" {
   }
   selector {
     namespace = "kube-system"
-  }  
+  }
 }
 
 # Resource: IAM Role for EKS Fargate Profile
