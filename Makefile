@@ -15,24 +15,24 @@ check-aws:
 
 init: check-aws
 	@echo "Initializing Terraform..."
-	@terraform init -backend=false -reconfigure -upgrade
+	@terraform init $(TERRAFORM_INIT_ARGS)
 
 
 validate: init
 	@echo "Validating Terraform configuration..."
-	@terraform validate
+	@terraform validate $(TERRAFORM_VALIDATE_ARGS)
 
 format:
 	@echo "Formatting Terraform configuration..."
-	@terraform fmt -recursive -diff -list=true
+	@terraform fmt $(TERRAFORM_FORMAT_ARGS)
 
 tflint:
 	@echo "Running TFLint..."
-	@tflint --fix
+	@tflint $(TFLINT_ARGS)
 
 tfsec:
 	@echo "Running TFSec..."
-	@tfsec --config-file .tfsec.yaml --minimum-severity HIGH
+	@tfsec $(TFSEC_ARGS)
 
 plan:
 	@echo "Creating Terraform plan..."

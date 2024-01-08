@@ -9,22 +9,22 @@ module "eks" {
   subnet_ids               = var.private_subnet_ids
   control_plane_subnet_ids = var.public_subnet_ids
 
-  cluster_addons = {
-    kube-proxy = {}
-    vpc-cni    = {}
-    coredns = {
-      configuration_values = jsonencode({
-        computeType = "Fargate"
-      })
-    }
-  }
+  # cluster_addons = {
+  #   kube-proxy = {}
+  #   vpc-cni    = {}
+  #   coredns = {
+  #     configuration_values = jsonencode({
+  #       computeType = "Fargate"
+  #     })
+  #   }
+  # }
 
   cluster_endpoint_private_access = true
   cluster_endpoint_public_access  = true
   create_cluster_security_group   = true
   create_node_security_group      = false
   create_iam_role                 = true
-  iam_role_arn                    = "${local.cluster_name}-role"
+  iam_role_name                   = "${local.cluster_name}-system-faragte-role"
 
   cluster_enabled_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
 

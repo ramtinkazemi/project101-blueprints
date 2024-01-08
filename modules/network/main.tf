@@ -12,7 +12,7 @@ module "vpc" {
 
   default_security_group_ingress = [{ self = true }]
   default_security_group_egress = [{ self = true }]
-  
+
   # NAT Gateways - Outbound Communication
   enable_nat_gateway = var.enable_nat_gateway
   single_nat_gateway = var.single_nat_gateway
@@ -49,6 +49,25 @@ module "vpc" {
     var.tags
   )
   map_public_ip_on_launch = false
+}
+
+resource "aws_security_group_rule" "allow_intra_vpc_ingress" {
+  type              = "ingress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  security_group_id = module.vpc.default_security_group_id
+  self              = true
+}
+
+resource "aws_security_group_rule" "allow_all_egress" {
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  security_group_id = module.vpc.default_security_group_id
+  cidr_blocks       = ["0.0.0.0/0"]
+  ipv6_cidr_blocks  = ["::/0"]
 }
 
 resource "aws_cloudwatch_log_group" "vpc_flow_log" {
