@@ -5,4 +5,5 @@ locals {
   oidc_issuer_url   = module.eks.cluster_oidc_issuer_url
   oidc_issuer       = replace(module.eks.cluster_oidc_issuer_url, "https://", "")
   oidc_provider_arn = module.eks.oidc_provider_arn
+  cluster_ca_data   = module.eks.cluster_certificate_authority_data
 }

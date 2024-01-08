@@ -50,12 +50,6 @@ variable "cluster_endpoint_public_access_cidrs" {
   default     = ["0.0.0.0/0"]
 }
 
-variable "eks_oidc_root_ca_thumbprint" {
-  description = "Thumbprint of Root CA for EKS OIDC, see https://docs.aws.amazon.com/eks/latest/userguide/authenticate-oidc-identity-provider.html"
-  type        = string
-  default     = "9e99a48a9960b14926bb7f3b02e22da2b0ab7280"
-}
-
 variable "tags" {
   description = "A map of tags to add to all resources"
   type        = map(string)

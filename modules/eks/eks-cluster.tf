@@ -31,20 +31,12 @@ module "eks" {
   fargate_profile_defaults = {
     iam_role_additional_policies = {
       a = "arn:aws:iam::aws:policy/AmazonEKSFargatePodExecutionRolePolicy"
-      b = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+      # b = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
     }
   }
 
   # Fargate Profile(s)
   fargate_profiles = {
-    # default = {
-    #   name = "default"
-    #   selectors = [
-    #     {
-    #       namespace = "default"
-    #     }
-    #   ]
-    # }
     system = {
       name = "system"
       selectors = [
@@ -79,6 +71,35 @@ module "eks" {
     var.tags
   )
 
+}
+
+resource "null_resource" "k8s_patcher" {
+  depends_on = [module.eks]
+
+  triggers = {
+    endpoint = module.eks.cluster_endpoint
+    ca_crt   = base64decode(local.cluster_ca_data)
+    token    = data.aws_eks_cluster_auth.this.token
+  }
+
+  provisioner "local-exec" {
+    command = <<EOH
+cat >/tmp/ca.crt <<EOF
+${base64decode(local.cluster_ca_data)}
+EOF
+kubectl \
+  --server="${module.eks.cluster_endpoint}" \
+  --certificate_authority=/tmp/ca.crt \
+  --token="${data.aws_eks_cluster_auth.this.token}" \
+  patch deployment coredns \
+  -n kube-system --type json \
+  -p='[{"op": "replace", "path": "/spec/template/metadata/annotations/eks.amazonaws.com~1compute-type", "value": "fargate"}]'
+EOH
+  }
+
+  lifecycle {
+    ignore_changes = [triggers]
+  }
 }
 
 /////////////////////////////////
