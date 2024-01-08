@@ -2,7 +2,7 @@ data "aws_region" "current" {}
 data "aws_partition" "current" {}
 data "aws_caller_identity" "current" {}
 
-resource "null_resource" "check_eks_cluster_ready" {
+resource "null_resource" "check_eks_cluster_active" {
   triggers = {
     cluster_name = local.cluster_name
   }
@@ -24,10 +24,10 @@ EOF
 
 data "aws_eks_cluster" "this" {
   name       = module.eks.cluster_name
-  depends_on = [null_resource.check_eks_cluster_ready]
+  depends_on = [null_resource.check_eks_cluster_active]
 }
 
 data "aws_eks_cluster_auth" "this" {
   name       = module.eks.cluster_name
-  depends_on = [null_resource.check_eks_cluster_ready]
+  depends_on = [null_resource.check_eks_cluster_active]
 }

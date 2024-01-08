@@ -30,7 +30,8 @@ module "eks" {
 
   fargate_profile_defaults = {
     iam_role_additional_policies = {
-      additional = aws_iam_policy.default_fargate_profile_policy.arn
+      a = "arn:aws:iam::aws:policy/AmazonEKSFargatePodExecutionRolePolicy"
+      b = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
     }
   }
 
@@ -41,6 +42,9 @@ module "eks" {
       selectors = [
         {
           namespace = "default"
+        },
+        {
+          namespace = "kube-system"
         }
       ]
     }
@@ -73,22 +77,6 @@ module "eks" {
 
 }
 
-resource "aws_iam_policy" "default_fargate_profile_policy" {
-  name = "${local.cluster_name}-default-fargate-profile-policy"
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = [
-          "ec2:Describe*",
-        ]
-        Effect   = "Allow"
-        Resource = "*"
-      },
-    ]
-  })
-}
 
 /////////////////////////////////
 // OUTPUTS
