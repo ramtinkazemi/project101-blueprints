@@ -32,13 +32,6 @@ variable "private_subnet_ids" {
   default     = []
 }
 
-variable "cluster_service_ipv4_cidr" {
-  description = "service ipv4 cidr for the kubernetes cluster"
-  type        = string
-  default     = "172.20.0.0/16"
-}
-
-
 variable "cluster_endpoint_private_access" {
   description = "Indicates whether or not the Amazon EKS private API server endpoint is enabled."
   type        = bool
