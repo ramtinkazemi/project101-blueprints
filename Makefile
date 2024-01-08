@@ -36,7 +36,7 @@ tfsec:
 
 plan:
 	@echo "Creating Terraform plan..."
-	@terraform plan -input=false
+	@terraform plan $(TERRAFORM_PLAN_ARGS)
 	@echo "\n\033[1;31m*** THIS PLAN IS NOT DEPLOYABLE. ***\033[0m"
 
 sure: check-aws validate format tflint tfsec plan
