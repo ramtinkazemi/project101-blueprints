@@ -10,6 +10,9 @@ module "vpc" {
   private_subnets = var.private_subnet_cidrs
   public_subnets  = var.public_subnet_cidrs
 
+  default_security_group_ingress = [{ self = true }]
+  default_security_group_egress = [{ self = true }]
+  
   # NAT Gateways - Outbound Communication
   enable_nat_gateway = var.enable_nat_gateway
   single_nat_gateway = var.single_nat_gateway

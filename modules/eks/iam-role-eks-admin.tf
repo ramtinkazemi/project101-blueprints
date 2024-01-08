@@ -25,14 +25,6 @@ resource "aws_iam_role" "eks_admin_role" {
       Statement = [
         {
           Action = [
-            "iam:ListRoles",
-            "ssm:GetParameter"
-          ]
-          Effect   = "Allow"
-          Resource = "*"
-        },
-        {
-          Action = [
             "eks:*",
           ]
           Effect   = "Allow"

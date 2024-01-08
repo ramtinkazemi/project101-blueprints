@@ -25,8 +25,6 @@ resource "aws_iam_role" "eks_readonly_role" {
       Statement = [
         {
           Action = [
-            "iam:ListRoles",
-            "ssm:GetParameter",
             "eks:DescribeNodegroup",
             "eks:ListNodegroups",
             "eks:DescribeCluster",

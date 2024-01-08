@@ -1,22 +1,3 @@
-# # Resource: Kubernetes Ingress Class
-# resource "kubernetes_ingress_class_v1" "ingress_class_default" {
-#   depends_on = [helm_release.loadbalancer_controller]
-#   metadata {
-#     name = "alb"
-#     annotations = {
-#       "ingressclass.kubernetes.io/is-default-class" = "true"
-#     }
-#   }
-#   spec {
-#     controller = "ingress.k8s.aws/alb"
-#   }
-# }
-
-# ## Additional Note
-# # 1. You can mark a particular IngressClass as the default for your cluster. 
-# # 2. Setting the ingressclass.kubernetes.io/is-default-class annotation to true on an IngressClass resource will ensure that new Ingresses without an ingressClassName field specified will be assigned this default IngressClass.  
-# # 3. Reference: https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.3/guide/ingress/ingress_class/
-
 # Datasource: AWS Load Balancer Controller IAM Policy get from aws-load-balancer-controller/ GIT Repo (latest)
 data "http" "lbc_iam_policy" {
   url = "https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/main/docs/install/iam_policy.json"
@@ -108,7 +89,7 @@ resource "helm_release" "loadbalancer_controller" {
 
   set {
     name  = "region"
-    value = data.aws_region.current.name
+    value = local.aws_region
   }
 
   set {
