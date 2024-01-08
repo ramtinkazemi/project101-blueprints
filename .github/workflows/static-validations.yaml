@@ -11,6 +11,7 @@ env:
   TERRAFORM_INIT_ARGS: '-backend=false -reconfigure -upgrade'
   TERRAFORM_FORMAT_ARGS: '-recursive -diff -list=true'
   TERRAFORM_VALIDATE_ARGS: ''
+  TERRAFORM_PLAN_ARGS: ''
   TFLINT_ARGS: '--fix'
   TFSEC_ARGS: '--config-file .tfsec.yaml --minimum-severity HIGH'
 
@@ -66,10 +67,10 @@ jobs:
           terraform_wrapper: false          
 
       - name: Terraform Validation
-        run: make validate
+        run: TERRAFORM_VALIDATE_ARGS=${{ env.TERRAFORM_VALIDATE_ARGS }} make validate
 
       - name: Terraform Format Check
-        run: make format
+        run: TERRAFORM_FMT_ARGS=${{ env.TERRAFORM_FMT_ARGS }} make format
 
       - name: Install tflint
         run: |
@@ -79,7 +80,7 @@ jobs:
           tflint --version
 
       - name: Run tflint
-        run: make tflint
+        run: TFLINT_ARGS=${{ env.TFLINT_ARGS }} make tflint
 
       - name: Install tfsec
         run: |
@@ -89,9 +90,9 @@ jobs:
           tfsec --version
 
       - name: Run tfsec
-        run: make tfsec
+        run: TFSEC_ARGS=${{ env.TFSEC_ARGS }} make tfsec
 
       - name: Run plan
-        run: make plan
+        run: TERRAFORM_PLAN_ARGS=${{ env.TERRAFORM_PLAN_ARGS }} make plan
 
 
