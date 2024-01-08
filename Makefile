@@ -1,39 +1,42 @@
-.PHONY: all check-aws init validate fmt tflint tfsec plan
+.PHONY: all check-aws init validate format tflint tfsec plan
 
-all: check-aws init validate fmt tflint tfsec plan apply
+all: check-aws init validate format tflint tfsec plan apply
 
 check-aws:
 	@echo "Checking AWS credentials..."
-	@aws sts get-caller-identity > /dev/null 2>&1; if [ $$? -gt 0 ]; then \
-		echo "An error occurred (ExpiredToken) when calling the GetCallerIdentity operation: The security token included in the request is expired"; \
-		exit 254; \
+	@AWS_IDENTITY=$$(aws sts get-caller-identity --output text --query 'Account'); \
+	AWS_USER=$$(aws sts get-caller-identity --output text --query 'Arn'); \
+	if [ -z "$$AWS_IDENTITY" ]; then \
+		echo "Failed to retrieve AWS identity."; \
+		exit 1; \
+	else \
+		echo "AWS User: $$AWS_USER"; \
 	fi
 
 init: check-aws
 	@echo "Initializing Terraform..."
-	# @terraform init -backend=false -reconfigure -upgrade
-	@terraform init -backend=false 
+	@terraform init $(TERRAFORM_INIT_ARGS)
 
 
 validate: init
 	@echo "Validating Terraform configuration..."
-	@terraform validate
+	@terraform validate $(TERRAFORM_VALIDATE_ARGS)
 
-fmt:
+format:
 	@echo "Formatting Terraform configuration..."
-	@terraform fmt -recursive -diff -list=true
+	@terraform fmt $(TERRAFORM_FORMAT_ARGS)
 
 tflint:
 	@echo "Running TFLint..."
-	@tflint --fix
+	@tflint $(TFLINT_ARGS)
 
 tfsec:
 	@echo "Running TFSec..."
-	@tfsec --config-file .tfsec.yaml --minimum-severity HIGH
+	@tfsec $(TFSEC_ARGS)
 
 plan:
 	@echo "Creating Terraform plan..."
-	@terraform plan -input=false
-	@echo "\n\033[1;31m*** THIS PLAN IS NOT DEPLOYABLE. YOU MUST NOT APPLY THIS PLAN ***\033[0m"
+	@terraform plan $(TERRAFORM_PLAN_ARGS)
+	@echo "\n\033[1;31m*** THIS PLAN IS NOT DEPLOYABLE. ***\033[0m"
 
-sure: check-aws validate fmt tflint tfsec init plan
+sure: check-aws validate format tflint tfsec plan

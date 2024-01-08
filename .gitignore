@@ -15,5 +15,3 @@ secret
 *.out
 *.tfgen
 crash.log
-
-.env.local

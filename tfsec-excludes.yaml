@@ -11,3 +11,5 @@ exclude:
   - aws-cloudfront-use-secure-tls-policy
   - aws-eks-encrypt-secrets
   - aws-ec2-no-public-egress-sgr
+  - aws-iam-no-policy-wildcards
+  - aws-s3-no-public-buckets

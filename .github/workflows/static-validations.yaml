@@ -5,8 +5,15 @@ env:
   TFSEC_VERSION: '1.28.4'
 
   AWS_REGION: 'ap-southeast-2'
-  AWS_ACCOUNT_ID: '654654301181'
-  AWS_OIDC_ROLE: 'arn:aws:iam::654654301181:role/github-action-blueprint-role-ap-southeast-2'
+  AWS_ACCOUNT_ID: '211125726495'
+  AWS_OIDC_ROLE: 'arn:aws:iam::211125726495:role/github-action-blueprints-role-ap-southeast-2'
+
+  TERRAFORM_INIT_ARGS: '-reconfigure -upgrade'
+  TERRAFORM_FORMAT_ARGS: '-recursive -diff -list=true'
+  TERRAFORM_VALIDATE_ARGS: ''
+  TERRAFORM_PLAN_ARGS: '-input=false'
+  TFLINT_ARGS: '--fix'
+  TFSEC_ARGS: '--config-file tfsec-excludes.yaml --minimum-severity HIGH'
 
 on:
   workflow_dispatch:
@@ -60,15 +67,10 @@ jobs:
           terraform_wrapper: false          
 
       - name: Terraform Validation
-        run: make validate
+        run: TERRAFORM_VALIDATE_ARGS="${{ env.TERRAFORM_VALIDATE_ARGS }}" make validate
 
       - name: Terraform Format Check
-        run: make fmt
-
-      # - name: Install tflint
-      #   run: |
-      #     curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
-      #     tflint --version
+        run: TERRAFORM_FORMAT_ARGS="${{ env.TERRAFORM_FORMAT_ARGS }}" make format
 
       - name: Install tflint
         run: |
@@ -78,7 +80,7 @@ jobs:
           tflint --version
 
       - name: Run tflint
-        run: make tflint
+        run: TFLINT_ARGS="${{ env.TFLINT_ARGS }}" make tflint
 
       - name: Install tfsec
         run: |
@@ -88,9 +90,11 @@ jobs:
           tfsec --version
 
       - name: Run tfsec
-        run: make tfsec
-
+        run: TFSEC_ARGS="${{ env.TFSEC_ARGS }}" make tfsec
+  
       - name: Run plan
-        run: make plan
+        run: |
+          TERRAFORM_INIT_ARGS="${{ env.TERRAFORM_INIT_ARGS }}" make init
+          TERRAFORM_PLAN_ARGS="${{ env.TERRAFORM_PLAN_ARGS }}" make plan
 
 

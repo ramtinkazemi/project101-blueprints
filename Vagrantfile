@@ -3,12 +3,14 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder ".", "/app"
   config.ssh.forward_agent = true
   config.vm.provision "shell", inline: <<-SHELL
+      . .env.local
+          
       # Update and install dependencies
       sudo apt update
       sudo apt install -y git curl unzip apt-transport-https gnupg lsb-release software-properties-common
 
-      git config --global user.email "ramtin.kazemi@gmail.com"
-      git config --global user.name "Ramtin Kazemi"
+      git config --global user.email $GIT_COMMITTER_EMAIL
+      git config --global user.name $GIT_COMMITTER_NAME
 
       # Install Pre-commit
       sudo apt install -y pre-commit
@@ -90,8 +92,8 @@ Vagrant.configure("2") do |config|
       echo 'export GOPATH=$HOME/go' >> /home/vagrant/.bashrc
       rm go.tar.gz
 
-      echo \
-      'function git_branch {
+      cat << 'EOF' >> /home/vagrant/.bashrc
+      function git_branch {
           if git rev-parse --git-dir > /dev/null 2>&1; then
             branch=$(git branch 2>/dev/null | grep "^*" | colrm 1 2)
             if [[ $(git status --porcelain 2>/dev/null| wc -l) -gt 0 ]]; then
@@ -100,9 +102,9 @@ Vagrant.configure("2") do |config|
               echo -e " \033[1;32m[$branch]\033[0m"   # Bold Green color for clean state
             fi
           fi
-        }'  >> /home/vagrant/.bashrc
-
-      echo "export PS1='\\[\\033[1;32m\\]\\u@\\h\\[\\033[0m\\]:\\w\$(git_branch)\\[\\033[0;37m\\] '" >> /home/vagrant/.bashrc
+        }
+        export PS1='\\[\\033[1;32m\\]\\u@\\h\\[\\033[0m\\]:\\w\$(git_branch)\\[\\033[0;37m\\] '
+EOF
 
       echo "alias gco='git checkout'" >> /home/vagrant/.bashrc
       echo "alias gcm='git commit -m'" >> /home/vagrant/.bashrc
