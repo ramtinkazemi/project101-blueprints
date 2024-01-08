@@ -20,7 +20,7 @@ variable "cluster_name" {
   default     = "app"
 }
 
-variable "app_namespace" {
+variable "k8s_namespace" {
   description = "Namespace for the app in EKS"
   default     = "app"
 }

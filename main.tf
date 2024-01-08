@@ -39,7 +39,7 @@ module "app" {
   vpc_id        = module.network.vpc_id
   cluster_name  = module.eks.cluster_name
   app_name      = "test"
-  app_namespace = "test"
+  k8s_namespace = "test"
   tags = {
     "extra" = "tag"
   }

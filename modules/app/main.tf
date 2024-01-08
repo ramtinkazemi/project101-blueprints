@@ -1,12 +1,12 @@
 # Resource: k8s namespace
 resource "kubernetes_namespace_v1" "this" {
   metadata {
-    name = var.app_namespace
+    name = var.k8s_namespace
   }
 }
 
 resource "aws_ecr_repository" "this" {
-  name                 = local.app_name
+  name                 = "${var.name_prefix}-ecr"
   image_tag_mutability = "MUTABLE"
   image_scanning_configuration {
     scan_on_push = true
