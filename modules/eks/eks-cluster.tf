@@ -21,7 +21,7 @@ module "eks" {
 
   cluster_endpoint_private_access = true
   cluster_endpoint_public_access  = true
-  create_cluster_security_group   = false
+  create_cluster_security_group   = true
   create_node_security_group      = false
   create_iam_role                 = true
   iam_role_arn                    = "${local.cluster_name}-role"
@@ -37,12 +37,17 @@ module "eks" {
 
   # Fargate Profile(s)
   fargate_profiles = {
-    default = {
-      name = "default"
+    # default = {
+    #   name = "default"
+    #   selectors = [
+    #     {
+    #       namespace = "default"
+    #     }
+    #   ]
+    # }
+    system = {
+      name = "system"
       selectors = [
-        {
-          namespace = "default"
-        },
         {
           namespace = "kube-system"
         }
@@ -50,7 +55,6 @@ module "eks" {
     }
   }
 
-  # aws-auth configmap
   manage_aws_auth_configmap = true
 
   aws_auth_roles = [
@@ -66,7 +70,7 @@ module "eks" {
     }
   ]
 
-  aws_auth_accounts = [data.aws_caller_identity.current.account_id]
+  aws_auth_accounts = [local.aws_account_id]
 
   tags = merge(
     {
@@ -76,7 +80,6 @@ module "eks" {
   )
 
 }
-
 
 /////////////////////////////////
 // OUTPUTS
