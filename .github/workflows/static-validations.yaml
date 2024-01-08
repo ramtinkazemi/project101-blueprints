@@ -6,7 +6,7 @@ env:
 
   AWS_REGION: 'ap-southeast-2'
   AWS_ACCOUNT_ID: '211125726495'
-  AWS_OIDC_ROLE: 'arn:aws:iam::211125726495:role/github-action-blueprint-role-ap-southeast-2'
+  AWS_OIDC_ROLE: 'arn:aws:iam::211125726495:role/github-action-blueprints-role-ap-southeast-2'
 
 on:
   workflow_dispatch:
