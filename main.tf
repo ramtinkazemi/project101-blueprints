@@ -13,7 +13,7 @@ module "network" {
   vpce_interface_services = ["logs", "sts", "eks", "ecr.api", "ecr.dkr", "dynamodb", "ec2"]
   enable_s3_gateway       = true
   tags = {
-    "env" = "test"
+    "extra" = "tag"
   }
 }
 
@@ -29,15 +29,18 @@ module "eks" {
   cluster_endpoint_public_access       = true
   cluster_endpoint_public_access_cidrs = ["0.0.0.0/0"]
   tags = {
-    "env" = "test"
+    "extra" = "tag"
   }
 }
 
-# module "app" {
-#   source        = "./modules/app"
-#   name_prefix   = "modules-app"
-#   vpc_id        = module.network.vpc_id
-#   cluster_name  = module.eks.cluster_name
-#   app_name      = "test"
-#   app_namespace = "test"
-# }
+module "app" {
+  source        = "./modules/app"
+  name_prefix   = "modules-app"
+  vpc_id        = module.network.vpc_id
+  cluster_name  = module.eks.cluster_name
+  app_name      = "test"
+  app_namespace = "test"
+  tags = {
+    "extra" = "tag"
+  }
+}

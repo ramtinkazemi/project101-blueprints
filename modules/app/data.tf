@@ -12,6 +12,6 @@ data "aws_subnets" "private" {
   }
 
   tags = {
-    Tier = "Private"
+    tier = "Private"
   }
 }

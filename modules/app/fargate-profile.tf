@@ -1,6 +1,6 @@
 # Resource: IAM Role for EKS Fargate Profile
 resource "aws_iam_role" "fargate_profile_role" {
-  name = "${local.name}-eks-fargate-profile-role-apps"
+  name = "${local.app_name}-role"
 
   assume_role_policy = jsonencode({
     Statement = [{
@@ -22,13 +22,12 @@ resource "aws_iam_role_policy_attachment" "eks_fargate_pod_execution_role_policy
 
 # Resource: EKS Fargate Profile
 resource "aws_eks_fargate_profile" "fargate_profile" {
-  cluster_name           = data.terraform_remote_state.eks.outputs.cluster_id
-  fargate_profile_name   = "${local.cluster_name}-fp-app1"
+  cluster_name           = var.cluster_name
+  fargate_profile_name   = local.app_name
   pod_execution_role_arn = aws_iam_role.fargate_profile_role.arn
-  subnet_ids             = data.terraform_remote_state.eks.outputs.private_subnets
+  subnet_ids             = data.aws_subnets.private.ids
   selector {
-    #namespace = "fp-ns-app1"
-    namespace = kubernetes_namespace_v1.fp_ns_app1.metadata[0].name
+    namespace = var.app_namespace
   }
 }
 
