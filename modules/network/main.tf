@@ -20,7 +20,7 @@ module "vpc" {
     {
       from_port        = 443
       to_port          = 443
-      protocol         = "HTTPS"
+      protocol         = "TCP"
       cidr_blocks      = "0.0.0.0/0"
       ipv6_cidr_blocks = "::/0"
     }
