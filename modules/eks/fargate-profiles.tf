@@ -1,13 +1,10 @@
 # Resource: EKS Fargate Profile
-resource "aws_eks_fargate_profile" "eks_fargate" {
+resource "aws_eks_fargate_profile" "kube_system" {
   depends_on             = [null_resource.check_eks_cluster_ready]
   cluster_name           = local.cluster_name
-  fargate_profile_name   = "eks_fargate"
+  fargate_profile_name   = "kube_system"
   pod_execution_role_arn = aws_iam_role.fargate_profile_role.arn
   subnet_ids             = var.private_subnet_ids
-  selector {
-    namespace = "default"
-  }
   selector {
     namespace = "kube-system"
   }

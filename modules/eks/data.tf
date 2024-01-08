@@ -9,16 +9,15 @@ resource "null_resource" "check_eks_cluster_ready" {
 
   provisioner "local-exec" {
     command     = <<EOF
-    TIME_OUT=600
-    end=$((SECONDS+TIME_OUT))
-    while [ $SECONDS -lt $end ]; do
-      status=$(aws eks describe-cluster --name ${local.cluster_name} --region ${local.aws_region} --query 'cluster.status' --output text 2>/dev/null)
-      [ "$status" = "ACTIVE" ] && exit 0
-      sleep 5
-    done
-    echo "Timeout reached"
-    exit 1
-    EOF
+TIME_OUT=900
+end=$((SECONDS+TIME_OUT))
+while [ $SECONDS -lt $end ]; do
+  status=$(aws eks describe-cluster --name ${local.cluster_name} --region ${local.aws_region} --query 'cluster.status' --output text 2>/dev/null)
+  [ "$status" = "ACTIVE" ] && exit 0
+  sleep 5
+done
+echo "WARNING: Timeout reached!" && exit 1
+EOF
     interpreter = ["/bin/bash", "-c"]
   }
 }

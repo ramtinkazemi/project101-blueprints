@@ -2,7 +2,7 @@ module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "19.21.0"
 
-  cluster_name    = var.cluster_name
+  cluster_name    = local.cluster_name
   cluster_version = var.cluster_version
 
   vpc_id                   = var.vpc_id
@@ -24,9 +24,27 @@ module "eks" {
   create_cluster_security_group   = false
   create_node_security_group      = false
   create_iam_role                 = true
-  iam_role_arn                    = "${local.cluster_name}-cluster-role"
+  iam_role_arn                    = "${local.cluster_name}-role"
 
   cluster_enabled_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
+
+  fargate_profile_defaults = {
+    iam_role_additional_policies = {
+      additional = aws_iam_policy.default_fargate_profile_policy.arn
+    }
+  }
+
+  # Fargate Profile(s)
+  fargate_profiles = {
+    default = {
+      name = "default"
+      selectors = [
+        {
+          namespace = "default"
+        }
+      ]
+    }
+  }
 
   # aws-auth configmap
   manage_aws_auth_configmap = true
@@ -48,14 +66,29 @@ module "eks" {
 
   tags = merge(
     {
-      "Name" = var.cluster_name
+      "Name" = local.cluster_name
     },
     var.tags
   )
 
 }
 
+resource "aws_iam_policy" "default_fargate_profile_policy" {
+  name = "${local.cluster_name}-default-fargate-profile-policy"
 
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "ec2:Describe*",
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      },
+    ]
+  })
+}
 
 /////////////////////////////////
 // OUTPUTS
