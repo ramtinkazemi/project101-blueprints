@@ -24,11 +24,11 @@ resource "null_resource" "check_eks_cluster_ready" {
 }
 
 data "aws_eks_cluster" "this" {
-  name       = aws_eks_cluster.this.name
+  name       = module.eks.cluster_name
   depends_on = [null_resource.check_eks_cluster_ready]
 }
 
 data "aws_eks_cluster_auth" "this" {
-  name       = aws_eks_cluster.this.name
+  name       = module.eks.cluster_name
   depends_on = [null_resource.check_eks_cluster_ready]
 }

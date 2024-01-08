@@ -47,6 +47,13 @@ resource "aws_iam_role" "eks_admin_role" {
   }
 }
 
+
+
+/////////////////////////////////
+// OUTPUTS
+/////////////////////////////////
+
+
 output "cluster_admin_role_arn" {
   description = "EKS cluster admin role arn"
   value       = aws_iam_role.eks_admin_role.arn

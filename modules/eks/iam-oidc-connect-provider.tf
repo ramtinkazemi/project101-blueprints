@@ -1,6 +1,6 @@
 locals {
-  oidc_issuer       = replace(aws_eks_cluster.this.identity[0].oidc[0].issuer, "https://", "")
-  oidc_issuer_url   = aws_eks_cluster.this.identity[0].oidc[0].issuer
+  oidc_issuer       = replace(module.eks.cluster_oidc_issuer_url, "https://", "")
+  oidc_issuer_url   = module.eks.cluster_oidc_issuer_url
   oidc_provider_arn = aws_iam_openid_connect_provider.oidc_provider.arn
   # # Extract OIDC Provider from OIDC Provider ARN
   # aws_iam_oidc_connect_provider_extract_from_arn = element(split("oidc-provider/", "${aws_iam_openid_connect_provider.oidc_provider.arn}"), 1)
@@ -19,6 +19,11 @@ resource "aws_iam_openid_connect_provider" "oidc_provider" {
     var.tags
   )
 }
+
+
+/////////////////////////////////
+// OUTPUTS
+/////////////////////////////////
 
 # Output: AWS IAM Open ID Connect Provider ARN
 output "aws_iam_openid_connect_provider_arn" {

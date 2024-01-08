@@ -90,6 +90,11 @@ resource "kubernetes_cluster_role_binding_v1" "eksreadonly_clusterrolebinding" {
   }
 }
 
+
+/////////////////////////////////
+// OUTPUTS
+/////////////////////////////////
+
 output "cluster_readonly_role_arn" {
   description = "EKS cluster read only role arn"
   value       = aws_iam_role.eks_readonly_role.arn

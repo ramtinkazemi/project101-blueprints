@@ -113,10 +113,16 @@ resource "helm_release" "loadbalancer_controller" {
 
   set {
     name  = "clusterName"
-    value = aws_eks_cluster.this.name
+    value = module.eks.cluster_name
   }
 
 }
+
+
+/////////////////////////////////
+// OUTPUTS
+/////////////////////////////////
+
 
 output "lbc_iam_policy" {
   value = data.http.lbc_iam_policy.response_body
