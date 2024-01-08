@@ -8,6 +8,12 @@ env:
   AWS_ACCOUNT_ID: '211125726495'
   AWS_OIDC_ROLE: 'arn:aws:iam::211125726495:role/github-action-blueprints-role-ap-southeast-2'
 
+  TERRAFORM_INIT_ARGS: '-backend=false -reconfigure -upgrade'
+  TERRAFORM_FORMAT_ARGS: '-recursive -diff -list=true'
+  TERRAFORM_VALIDATE_ARGS: ''
+  TFLINT_ARGS: '--fix'
+  TFSEC_ARGS: '--config-file .tfsec.yaml --minimum-severity HIGH'
+
 on:
   workflow_dispatch:
     inputs:
