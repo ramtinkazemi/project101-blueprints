@@ -27,8 +27,8 @@ module "eks" {
   cluster_endpoint_public_access  = true
   create_cluster_security_group   = false
   create_node_security_group      = false
-  create_iam_role                 = false
-  iam_role_arn                    = aws_iam_role.eks_master_role.arn
+  create_iam_role                 = true
+  iam_role_arn                    = "${local.cluster_name}-cluster-role"
 
   cluster_enabled_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
 
@@ -38,29 +38,17 @@ module "eks" {
   aws_auth_roles = [
     {
       rolearn  = "${aws_iam_role.eks_admin_role.arn}"
-      username = "eks-admin" # Just a place holder name
+      username = "eks-admin"
       groups   = ["system:masters"]
     },
     {
       rolearn  = "${aws_iam_role.eks_readonly_role.arn}"
-      username = "eks-readonly" # Just a place holder name
+      username = "eks-readonly"
       groups   = ["${kubernetes_cluster_role_binding_v1.eksreadonly_clusterrolebinding.subject[0].name}"]
     }
   ]
 
   aws_auth_accounts = [data.aws_caller_identity.current.account_id]
-
-  # Fargate Profile(s)
-  fargate_profiles = {
-    default = {
-      name = "default"
-      selectors = [
-        {
-          namespace = "default"
-        }
-      ]
-    }
-  }
 
   tags = merge(
     {
