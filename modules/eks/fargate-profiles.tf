@@ -48,18 +48,3 @@ resource "aws_iam_role_policy_attachment" "eks_fargate_pod_execution_role_policy
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSFargatePodExecutionRolePolicy"
   role       = aws_iam_role.fargate_profile_role.name
 }
-
-
-# resource "kubernetes_config_map" "aws_logging" {
-#   metadata {
-#     name      = "aws-logging"
-#     namespace = "kube-system"
-#   }
-
-#   data = {
-#     "clusterLogging" = jsonencode([{
-#       "types"   = ["api", "audit", "authenticator", "controllerManager", "scheduler"],
-#       "enabled" = true
-#     }])
-#   }
-# }
