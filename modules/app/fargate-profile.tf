@@ -1,6 +1,6 @@
 # Resource: IAM Role for EKS Fargate Profile
 resource "aws_iam_role" "fargate_profile_role" {
-  name = "${local.app_name}-role"
+  name = "${var.name_prefix}-role"
 
   assume_role_policy = jsonencode({
     Statement = [{

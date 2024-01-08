@@ -23,7 +23,7 @@ resource "aws_ssm_parameter" "cluster_role_arn" {
 }
 
 resource "aws_ssm_parameter" "eks_cluster_oidc_provider_arn" {
-  name  = "/facts/v1/${local.cluster_name}/eks_cluster_oidc_issuer_url"
+  name  = "/facts/v1/${local.cluster_name}/eks_cluster_oidc_provider_arn"
   type  = "String"
   value = module.eks.oidc_provider_arn
 }

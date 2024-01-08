@@ -31,3 +31,4 @@ data "aws_eks_cluster_auth" "this" {
   name       = module.eks.cluster_name
   depends_on = [null_resource.check_eks_cluster_active]
 }
+

@@ -59,7 +59,7 @@ resource "aws_iam_role_policy_attachment" "lbc_iam_role_policy_attach" {
 
 # Resource: Helm Release 
 resource "helm_release" "loadbalancer_controller" {
-  depends_on = [aws_iam_role.lbc_iam_role]
+  depends_on = [aws_iam_role.lbc_iam_role, null_resource.k8s_patcher]
   name       = "aws-load-balancer-controller"
 
   repository = "https://aws.github.io/eks-charts"

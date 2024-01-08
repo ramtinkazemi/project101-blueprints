@@ -9,22 +9,24 @@ module "eks" {
   subnet_ids               = var.private_subnet_ids
   control_plane_subnet_ids = var.public_subnet_ids
 
-  # cluster_addons = {
-  #   kube-proxy = {}
-  #   vpc-cni    = {}
-  #   coredns = {
-  #     configuration_values = jsonencode({
-  #       computeType = "Fargate"
-  #     })
-  #   }
-  # }
+  cluster_addons = {
+    kube-proxy = {}
+    vpc-cni    = {}
+    # coredns = {
+    #   configuration_values = jsonencode({
+    #     computeType = "Fargate"
+    #   })
+    # }
+  }
 
   cluster_endpoint_private_access = true
   cluster_endpoint_public_access  = true
   create_node_security_group      = false
-  create_cluster_security_group   = true
-  create_iam_role                 = true
-  iam_role_name                   = "${local.cluster_name}-role"
+  # create_cluster_security_group   = true
+  # cluster_security_group_id = data.aws_default_security_group.default.id
+
+  create_iam_role = true
+  iam_role_name   = "${local.cluster_name}-role"
 
   cluster_enabled_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
 
@@ -79,22 +81,27 @@ resource "null_resource" "k8s_patcher" {
   triggers = {
     endpoint = module.eks.cluster_endpoint
     ca_crt   = base64decode(local.cluster_ca_data)
-    token    = data.aws_eks_cluster_auth.this.token
+    token    = local.cluster_token
   }
 
   provisioner "local-exec" {
-    command = <<EOH
+    command = <<COMMANDS
 cat >/tmp/ca.crt <<EOF
 ${base64decode(local.cluster_ca_data)}
 EOF
 kubectl \
   --server="${module.eks.cluster_endpoint}" \
   --certificate_authority=/tmp/ca.crt \
-  --token="${data.aws_eks_cluster_auth.this.token}" \
+  --token="${local.cluster_token}" \
   patch deployment coredns \
   -n kube-system --type json \
   -p='[{"op": "replace", "path": "/spec/template/metadata/annotations/eks.amazonaws.com~1compute-type", "value": "fargate"}]'
-EOH
+kubectl \
+  --server="${module.eks.cluster_endpoint}" \
+  --certificate_authority=/tmp/ca.crt \
+  --token="${local.cluster_token}" \
+  rollout restart deployment coredns -n kube-system
+COMMANDS
   }
 
   lifecycle {

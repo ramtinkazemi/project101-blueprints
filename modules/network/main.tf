@@ -12,23 +12,28 @@ module "vpc" {
 
   default_security_group_ingress = [
     {
-      from_port         = 0
-      to_port           = 0
-      protocol          = "-1"
-      security_group_id = module.vpc.default_security_group_id
-      self              = true
+      from_port = 0
+      to_port   = 0
+      protocol  = "-1"
+      self      = true
+    },
+    {
+      from_port        = 443
+      to_port          = 443
+      protocol         = "HTTPS"
+      cidr_blocks      = "0.0.0.0/0"
+      ipv6_cidr_blocks = "::/0"
     }
   ]
-  
-  default_security_group_egress  = [
+
+  default_security_group_egress = [
     {
-      from_port         = 0
-      to_port           = 0
-      protocol          = "-1"
-      security_group_id = module.vpc.default_security_group_id
-      cidr_blocks       = "0.0.0.0/0"
-      ipv6_cidr_blocks  = "::/0"
-    }    
+      from_port        = 0
+      to_port          = 0
+      protocol         = "-1"
+      cidr_blocks      = "0.0.0.0/0"
+      ipv6_cidr_blocks = "::/0"
+    }
   ]
 
   # NAT Gateways - Outbound Communication
@@ -69,25 +74,6 @@ module "vpc" {
   )
   map_public_ip_on_launch = false
 }
-
-# resource "aws_security_group_rule" "allow_intra_vpc_ingress" {
-#   type              = "ingress"
-#   from_port         = 0
-#   to_port           = 0
-#   protocol          = "-1"
-#   security_group_id = module.vpc.default_security_group_id
-#   self              = true
-# }
-
-# resource "aws_security_group_rule" "allow_all_egress" {
-#   type              = "egress"
-#   from_port         = 0
-#   to_port           = 0
-#   protocol          = "-1"
-#   security_group_id = module.vpc.default_security_group_id
-#   cidr_blocks       = ["0.0.0.0/0"]
-#   ipv6_cidr_blocks  = ["::/0"]
-# }
 
 resource "aws_cloudwatch_log_group" "vpc_flow_log" {
   name = "/vpc/flowlog/${local.vpc_name}"
