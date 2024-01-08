@@ -2,13 +2,13 @@
 // As abest practice, we should always override the default values of the variables in the root module.
 
 module "network" {
-  source                  = "./modules/network"
-  name_prefix             = "modules-network"
-  vpc_name                = "test"
-  cidr_block              = "10.1.0.0/16"
-  public_subnet_cidrs     = ["10.1.1.0/24", "10.1.2.0/24"]
-  private_subnet_cidrs    = ["10.1.101.0/24", "10.1.102.0/24"]
-  availability_zones      = ["ap-southeast-2a", "ap-southeast-2b"]
+  source               = "./modules/network"
+  name_prefix          = "modules-network"
+  vpc_name             = "test"
+  cidr_block           = "10.1.0.0/16"
+  public_subnet_cidrs  = ["10.1.1.0/24", "10.1.2.0/24"]
+  private_subnet_cidrs = ["10.1.101.0/24", "10.1.102.0/24"]
+  # availability_zones      = ["ap-southeast-2a", "ap-southeast-2b"]
   enable_nat_gateway      = true
   single_nat_gateway      = true
   vpce_interface_services = ["logs", "sts", "eks", "ecr.api", "ecr.dkr", "dynamodb", "ec2"]

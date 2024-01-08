@@ -1,6 +1,6 @@
-.PHONY: all check-aws init validate fmt tflint tfsec plan
+.PHONY: all check-aws init validate format tflint tfsec plan
 
-all: check-aws init validate fmt tflint tfsec plan apply
+all: check-aws init validate format tflint tfsec plan apply
 
 check-aws:
 	@echo "Checking AWS credentials..."
@@ -22,7 +22,7 @@ validate: init
 	@echo "Validating Terraform configuration..."
 	@terraform validate
 
-fmt:
+format:
 	@echo "Formatting Terraform configuration..."
 	@terraform fmt -recursive -diff -list=true
 
@@ -39,4 +39,4 @@ plan:
 	@terraform plan -input=false
 	@echo "\n\033[1;31m*** THIS PLAN IS NOT DEPLOYABLE. ***\033[0m"
 
-sure: check-aws validate fmt tflint tfsec plan
+sure: check-aws validate format tflint tfsec plan

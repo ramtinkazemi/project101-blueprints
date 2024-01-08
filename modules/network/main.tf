@@ -6,9 +6,9 @@ module "vpc" {
   # VPC Basic Details
   name            = local.vpc_name
   cidr            = var.cidr_block
-  azs             = var.availability_zones
-  public_subnets  = var.public_subnet_cidrs
+  azs             = slice(data.aws_availability_zones.available.names, 0, length(var.private_subnet_cidrs))
   private_subnets = var.private_subnet_cidrs
+  public_subnets  = var.public_subnet_cidrs
 
   # NAT Gateways - Outbound Communication
   enable_nat_gateway = var.enable_nat_gateway
@@ -45,8 +45,7 @@ module "vpc" {
     },
     var.tags
   )
-  # Instances launched into the Public subnet should be assigned a public IP address.
-  map_public_ip_on_launch = true
+  map_public_ip_on_launch = false
 }
 
 resource "aws_cloudwatch_log_group" "vpc_flow_log" {

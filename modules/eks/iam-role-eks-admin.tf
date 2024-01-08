@@ -26,11 +26,17 @@ resource "aws_iam_role" "eks_admin_role" {
         {
           Action = [
             "iam:ListRoles",
-            "eks:*",
             "ssm:GetParameter"
           ]
           Effect   = "Allow"
           Resource = "*"
+        },
+        {
+          Action = [
+            "eks:*",
+          ]
+          Effect   = "Allow"
+          Resource = "arn:aws:eks:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:cluster/${local.cluster_name}"
         },
       ]
     })
