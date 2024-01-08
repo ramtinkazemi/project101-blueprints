@@ -29,10 +29,6 @@ resource "aws_iam_policy" "externaldns_iam_policy" {
   })
 }
 
-output "externaldns_iam_policy_arn" {
-  value = aws_iam_policy.externaldns_iam_policy.arn
-}
-
 # Resource: Create IAM Role 
 resource "aws_iam_role" "externaldns_iam_role" {
   name = "${local.cluster_name}-externaldns-iam-role"
@@ -110,6 +106,10 @@ resource "helm_release" "external_dns" {
     value = "sync"   # "sync" will ensure that when ingress resource is deleted, equivalent DNS record in Route53 will get deleted
   }
 
+}
+
+output "externaldns_iam_policy_arn" {
+  value = aws_iam_policy.externaldns_iam_policy.arn
 }
 
 output "externaldns_iam_role_arn" {

@@ -89,3 +89,8 @@ resource "kubernetes_cluster_role_binding_v1" "eksreadonly_clusterrolebinding" {
     api_group = "rbac.authorization.k8s.io"
   }
 }
+
+output "cluster_readonly_role_arn" {
+  description = "EKS cluster read only role arn"
+  value       = aws_iam_role.eks_readonly_role.arn
+}
