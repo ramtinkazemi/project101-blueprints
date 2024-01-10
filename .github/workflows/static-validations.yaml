@@ -1,12 +1,12 @@
 name: Terraform Static Validations
 env:
   TERRAFORM_VERSION: '1.6.6'
-  TFLINT_VERSION: '0.50.0'
-  TFSEC_VERSION: '1.28.4'
+  TFLINT_VERSION: 'v0.50.0'
+  TFSEC_VERSION: 'v1.28.4'
 
   AWS_REGION: 'ap-southeast-2'
   AWS_ACCOUNT_ID: '211125726495'
-  AWS_OIDC_ROLE: 'arn:aws:iam::211125726495:role/github-action-blueprints-role-ap-southeast-2'
+  AWS_OIDC_ROLE: 'arn:aws:iam::211125726495:role/gha-oidc-blueprints-role-ap-southeast-2'
 
   TERRAFORM_INIT_ARGS: '-reconfigure -upgrade'
   TERRAFORM_FORMAT_ARGS: '-recursive -diff -list=true'
@@ -19,8 +19,8 @@ on:
   workflow_dispatch:
     inputs:
       name:
-        default: Debigging...
-        description: "Running workflow manually"
+        default: "Validating Terraform modules"
+        description: Manual Run
   push:
     branches:
       - main
@@ -74,7 +74,7 @@ jobs:
 
       - name: Install tflint
         run: |
-          curl -o tflint.zip -sL https://github.com/terraform-linters/tflint/releases/download/v${{ env.TFLINT_VERSION }}/tflint_linux_amd64.zip
+          curl -o tflint.zip -sL https://github.com/terraform-linters/tflint/releases/download/${{ env.TFLINT_VERSION }}/tflint_linux_amd64.zip
           unzip tflint.zip -d /usr/local/bin
           chmod +x /usr/local/bin/tflint
           tflint --version
@@ -84,7 +84,7 @@ jobs:
 
       - name: Install tfsec
         run: |
-          curl -o tfsec -SLf https://github.com/aquasecurity/tfsec/releases/download/v${TFSEC_VERSION}/tfsec-linux-amd64
+          curl -o tfsec -SLf https://github.com/aquasecurity/tfsec/releases/download/${TFSEC_VERSION}/tfsec-linux-amd64
           sudo mv tfsec /usr/local/bin
           chmod +x /usr/local/bin/tfsec
           tfsec --version
