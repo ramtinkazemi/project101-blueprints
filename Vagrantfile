@@ -3,8 +3,8 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder ".", "/app"
   config.ssh.forward_agent = true
   config.vm.provision "shell", inline: <<-SHELL
-      . .env.local
-          
+      . .env.vagrant
+        
       # Update and install dependencies
       sudo apt update
       sudo apt install -y git curl unzip apt-transport-https gnupg lsb-release software-properties-common
