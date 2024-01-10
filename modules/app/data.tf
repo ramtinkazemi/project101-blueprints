@@ -17,12 +17,12 @@ data "aws_subnets" "private" {
 }
 
 data "aws_eks_cluster" "this" {
-  name = var.cluster_name
+  name       = var.cluster_name
   depends_on = [null_resource.check_eks_cluster_active]
 }
 
 data "aws_eks_cluster_auth" "this" {
-  name = var.cluster_name
+  name       = var.cluster_name
   depends_on = [null_resource.check_eks_cluster_active]
 }
 
