@@ -50,6 +50,14 @@ resource "aws_s3_bucket_policy" "static_assets_policy" {
         }
       },
       {
+        Action   = "s3:*",
+        Effect   = "Allow",
+        Resource = "${aws_s3_bucket.static_assets.arn}*",
+        Principal = {
+          AWS = "arn:aws:iam::${local.aws_account_id}:role/gha-oidc-infra-role-${local.aws_region}"
+        }
+      },
+      {
         Action    = "s3:ListBucket",
         Effect    = "Deny",
         Resource  = aws_s3_bucket.static_assets.arn,
