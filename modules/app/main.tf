@@ -16,7 +16,7 @@ resource "aws_ecr_repository" "this" {
 
 resource "aws_s3_bucket" "static_assets" {
   bucket = "${local.app_name}-static-assets-${local.aws_account_id}-${local.aws_region}"
-  acl    = "public-read"
+  acl    = "private"
   versioning {
     enabled = true
   }
@@ -32,7 +32,7 @@ resource "aws_s3_bucket" "static_assets" {
 
 resource "aws_s3_object" "image" {
   bucket = aws_s3_bucket.static_assets.bucket
-  key    = "images/image.jpeg"
+  key    = "image.jpeg"
   source = "./image.jpeg"
   acl    = "private"
 }
