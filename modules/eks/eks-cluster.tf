@@ -66,7 +66,7 @@ module "eks" {
       rolearn  = "${var.additional_eks_admin_role_arn}"
       username = "additional-admin"
       groups   = ["system:masters"]
-    }   
+    }
   ]
 
   aws_auth_accounts = [local.aws_account_id]

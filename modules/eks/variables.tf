@@ -52,7 +52,7 @@ variable "cluster_endpoint_public_access_cidrs" {
 
 variable "additional_eks_admin_role_arn" {
   description = "Additional IAM role to be added to the `system:masters` Kubernetes RBAC group."
-  type = string
+  type        = string
 }
 
 variable "tags" {
