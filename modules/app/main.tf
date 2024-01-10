@@ -16,7 +16,7 @@ resource "aws_ecr_repository" "this" {
 
 resource "aws_s3_bucket" "static_assets" {
   bucket = "${var.app_name}-static-${local.aws_account_id}-${local.aws_region}"
-  acl    = "public-read"
+  # acl    = "public-read"
   versioning {
     enabled = true
   }
