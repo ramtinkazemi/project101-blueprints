@@ -3,7 +3,7 @@ all: check-aws init validate format tflint tfsec plan
 
 setup-local-env:
 ifeq ($(GITHUB_ACTIONS),true)
-	@echo "Running on GitHub Actions => Skipping .env.local export
+	@echo "Running on GitHub Actions, skipping .env.local export"
 else
 	@rm -f .env.local.tmp 2> /dev/null || true
 	@sed -E "s/=(['\"])([^'\"]+)(['\"])/=\2/" .env.local > .env.local.tmp
