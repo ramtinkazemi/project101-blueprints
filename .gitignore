@@ -15,3 +15,5 @@ secret
 *.out
 *.tfgen
 crash.log
+
+*.tmp

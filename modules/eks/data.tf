@@ -32,3 +32,9 @@ data "aws_eks_cluster_auth" "this" {
   depends_on = [null_resource.check_eks_cluster_active]
 }
 
+data "aws_subnets" "all_subnets" {
+  filter {
+    name   = "vpc-id"
+    values = [var.vpc_id]
+  }
+}

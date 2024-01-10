@@ -20,12 +20,6 @@ variable "cluster_name" {
   default     = "app"
 }
 
-variable "k8s_namespace" {
-  description = "Namespace for the app in EKS"
-  default     = "app"
-}
-
-
 # variable "image_repository" {
 #   description = "The repository URL of the Docker image"
 #   type        = string
