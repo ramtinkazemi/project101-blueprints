@@ -109,6 +109,14 @@ COMMANDS
   }
 }
 
+resource "aws_ec2_tag" "subnets" {
+  for_each = { for subnet_id in data.aws_subnets.all_subnets.ids : subnet_id => subnet_id }
+
+  resource_id = each.value
+  key         = "kubernetes.io/cluster/${var.cluster_name}"
+  value       = "shared"
+}
+
 /////////////////////////////////
 // OUTPUTS
 /////////////////////////////////

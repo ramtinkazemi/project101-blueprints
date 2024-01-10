@@ -34,12 +34,11 @@ module "eks" {
 }
 
 module "app" {
-  source        = "./modules/app"
-  name_prefix   = "modules-app"
-  vpc_id        = module.network.vpc_id
-  cluster_name  = module.eks.cluster_name
-  app_name      = "test"
-  k8s_namespace = "test"
+  source       = "./modules/app"
+  name_prefix  = "modules-app"
+  vpc_id       = module.network.vpc_id
+  cluster_name = module.eks.cluster_name
+  app_name     = "test"
   tags = {
     "extra" = "tag"
   }

@@ -1,6 +1,6 @@
 # Resource: IAM Role for EKS Fargate Profile
 resource "aws_iam_role" "fargate_profile_role" {
-  name = "${var.name_prefix}-role"
+  name = "${local.app_name}-role"
 
   assume_role_policy = jsonencode({
     Statement = [{
@@ -27,7 +27,7 @@ resource "aws_eks_fargate_profile" "fargate_profile" {
   pod_execution_role_arn = aws_iam_role.fargate_profile_role.arn
   subnet_ids             = data.aws_subnets.private.ids
   selector {
-    namespace = var.k8s_namespace
+    namespace = local.app_name
   }
 }
 

@@ -46,17 +46,15 @@ module "vpc" {
 
   # Additional Tags to Subnets
   public_subnet_tags = {
-    "Name"                                    = "${local.vpc_name}-public"
-    "tier"                                    = "public"
-    "kubernetes.io/role/elb"                  = 1
-    "kubernetes.io/cluster/${local.vpc_name}" = "shared"
+    "Name"                   = "${local.vpc_name}-public"
+    "tier"                   = "public"
+    "kubernetes.io/role/elb" = 1
   }
 
   private_subnet_tags = {
-    "Name"                                    = "${local.vpc_name}-private"
-    "tier"                                    = "private"
-    "kubernetes.io/role/internal-elb"         = 1
-    "kubernetes.io/cluster/${local.vpc_name}" = "shared"
+    "Name"                            = "${local.vpc_name}-private"
+    "tier"                            = "private"
+    "kubernetes.io/role/internal-elb" = 1
   }
 
   tags = merge(
