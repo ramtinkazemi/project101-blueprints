@@ -5,8 +5,9 @@ setup-local-env:
 ifeq ($(GITHUB_ACTIONS),true)
 	@echo "Running on GitHub Actions => Skipping .env.local export
 else
-	@sed -E "s/=(['\"])([^'\"]+)(['\"])/=\2/" .env.local > .env.tmp
-	$(eval include .env.tmp)
+	@rm -f .env.local.tmp 2> /dev/null || true
+	@sed -E "s/=(['\"])([^'\"]+)(['\"])/=\2/" .env.local > .env.local.tmp
+	$(eval include .env.local.tmp)
 	$(eval export)
 	@echo "Running locally => .env.local variables exported"
 endif
@@ -14,11 +15,11 @@ endif
 check-aws: setup-local-env
 	@echo "Checking AWS credentials..."; \
 	AWS_USER=$$(aws sts get-caller-identity --output text --query 'Arn'); \
-	if [ -z "$$AWS_USER" ]; then \
+	if [ -z "$${AWS_USER}" ]; then \
 		echo "Failed to retrieve AWS identity."; \
 		exit 1; \
 	else \
-		echo "AWS User: $$AWS_USER"; \
+		echo "AWS User: $${AWS_USER}"; \
 	fi
 
 init: check-aws
