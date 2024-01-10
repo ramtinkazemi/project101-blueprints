@@ -34,7 +34,7 @@ resource "aws_s3_object" "image" {
   bucket = aws_s3_bucket.static_assets.bucket
   key    = "images/image.jpeg"
   source = "./image.jpeg"
-  acl    = "public-read"
+  acl    = "private-read"
 }
 
 resource "aws_s3_bucket_policy" "static_assets_policy" {
