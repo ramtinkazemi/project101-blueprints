@@ -50,6 +50,11 @@ variable "cluster_endpoint_public_access_cidrs" {
   default     = ["0.0.0.0/0"]
 }
 
+variable "additional_eks_admin_role_arn" {
+  description = "Additional IAM role to be added to the `system:masters` Kubernetes RBAC group."
+  type = string
+}
+
 variable "tags" {
   description = "A map of tags to add to all resources"
   type        = map(string)

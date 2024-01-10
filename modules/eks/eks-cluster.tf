@@ -61,7 +61,12 @@ module "eks" {
       rolearn  = "${aws_iam_role.eks_readonly_role.arn}"
       username = "eks-readonly"
       groups   = ["${kubernetes_cluster_role_binding_v1.eksreadonly_clusterrolebinding.subject[0].name}"]
-    }
+    },
+    {
+      rolearn  = "${var.additional_eks_admin_role_arn}"
+      username = "additional-admin"
+      groups   = ["system:masters"]
+    }   
   ]
 
   aws_auth_accounts = [local.aws_account_id]
