@@ -18,12 +18,14 @@ module "network" {
 }
 
 module "eks" {
-  source                               = "./modules/eks"
-  name_prefix                          = "modules-eks"
-  cluster_name                         = "test"
-  vpc_id                               = module.network.vpc_id
-  public_subnet_ids                    = module.network.public_subnet_ids
-  private_subnet_ids                   = module.network.private_subnet_ids
+  source       = "./modules/eks"
+  name_prefix  = "modules-eks"
+  cluster_name = "test"
+  vpc_id       = module.network.vpc_id
+  # public_subnet_ids                    = coalescelist(module.network.public_subnet_ids, ["subnet-public-1", "subnet-public-2"])
+  # private_subnet_ids                   = coalescelist(module.network.private_subnet_ids, ["subnet-private-1", "subnet-private-2"])
+  public_subnet_ids                    = ["subnet-public-1", "subnet-public-2"]
+  private_subnet_ids                   = ["subnet-private-1", "subnet-private-2"]
   cluster_version                      = "1.28"
   cluster_endpoint_private_access      = false
   cluster_endpoint_public_access       = true
