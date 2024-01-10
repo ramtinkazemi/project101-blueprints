@@ -1,5 +1,5 @@
-.PHONY: all setup-local-env check-aws init validate format tflint tfsec plan
-all: check-aws init validate format tflint tfsec plan
+.PHONY: all setup-local-env check-aws init validate format tflint tfsec
+all: check-aws init validate format tflint tfsec
 
 setup-local-env:
 ifeq ($(GITHUB_ACTIONS),true)
@@ -47,10 +47,4 @@ tfsec: setup-local-env
 	@echo TFSEC_ARGS=$(TFSEC_ARGS)
 	@tfsec $(TFSEC_ARGS)
 
-# plan: setup-local-env
-# 	@echo "Creating Terraform plan..."
-# 	@echo TERRAFORM_PLAN_ARGS=$(TERRAFORM_PLAN_ARGS)
-# 	@terraform plan $(TERRAFORM_PLAN_ARGS)
-# 	@echo "\n\033[1;31m*** THIS PLAN IS NOT DEPLOYABLE. ***\033[0m"
-
-sure: check-aws validate format tflint tfsec plan
+sure: check-aws validate format tflint tfsec
