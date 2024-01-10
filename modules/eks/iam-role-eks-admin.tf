@@ -1,6 +1,6 @@
 # Resource: AWS IAM Role - EKS Admin
 resource "aws_iam_role" "eks_admin_role" {
-  name = "${local.cluster_name}-eks-admin-role"
+  name = "${var.cluster_name}-admin"
 
   # Terraform's "jsonencode" function converts a
   # Terraform expression result to valid JSON syntax.
@@ -28,14 +28,14 @@ resource "aws_iam_role" "eks_admin_role" {
             "eks:*",
           ]
           Effect   = "Allow"
-          Resource = "arn:aws:eks:${local.aws_region}:${local.aws_account_id}:cluster/${local.cluster_name}"
+          Resource = "arn:aws:eks:${local.aws_region}:${local.aws_account_id}:cluster/${var.cluster_name}"
         },
       ]
     })
   }
 
   tags = {
-    tag-key = "${local.cluster_name}-eks-admin-role"
+    tag-key = "${var.cluster_name}-admin"
   }
 }
 

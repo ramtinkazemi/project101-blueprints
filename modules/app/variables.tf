@@ -1,7 +1,7 @@
-variable "name_prefix" {
-  description = "A prefix prepended to all resource names"
-  type        = string
-}
+# variable "name_prefix" {
+#   description = "A prefix prepended to all resource names"
+#   type        = string
+# }
 
 variable "app_name" {
   description = "Name of the application"

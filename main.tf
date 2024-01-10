@@ -3,7 +3,6 @@
 
 module "network" {
   source                  = "./modules/network"
-  name_prefix             = "modules-network"
   vpc_name                = "test"
   cidr_block              = "10.1.0.0/16"
   public_subnet_cidrs     = ["10.1.1.0/24", "10.1.2.0/24"]
@@ -19,7 +18,6 @@ module "network" {
 
 module "eks" {
   source       = "./modules/eks"
-  name_prefix  = "modules-eks"
   cluster_name = "test"
   vpc_id       = module.network.vpc_id
   # public_subnet_ids                    = coalescelist(module.network.public_subnet_ids, ["subnet-public-1", "subnet-public-2"])
@@ -38,10 +36,9 @@ module "eks" {
 
 module "app" {
   source       = "./modules/app"
-  name_prefix  = "modules-app"
+  app_name     = "test"
   vpc_id       = module.network.vpc_id
   cluster_name = module.eks.cluster_name
-  app_name     = "test"
   tags = {
     "extra" = "tag"
   }

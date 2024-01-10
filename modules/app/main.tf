@@ -1,12 +1,12 @@
 # Resource: k8s namespace
 resource "kubernetes_namespace_v1" "this" {
   metadata {
-    name = local.app_name
+    name = var.app_name
   }
 }
 
 resource "aws_ecr_repository" "this" {
-  name                 = "${var.name_prefix}-ecr"
+  name                 = "${var.app_name}-ecr"
   image_tag_mutability = "MUTABLE"
   image_scanning_configuration {
     scan_on_push = true
@@ -15,7 +15,7 @@ resource "aws_ecr_repository" "this" {
 }
 
 resource "aws_s3_bucket" "static_assets" {
-  bucket = "${local.app_name}-static-assets-${local.aws_account_id}-${local.aws_region}"
+  bucket = "${var.app_name}-static-${local.aws_account_id}-${local.aws_region}"
   acl    = "private"
   versioning {
     enabled = true
@@ -105,37 +105,37 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 }
 
 resource "aws_ssm_parameter" "ecr_repository_arn" {
-  name  = "/facts/v1/${local.app_name}/ecr_repository_arn"
+  name  = "/facts/v1/${var.app_name}/ecr_repository_arn"
   type  = "String"
   value = aws_ecr_repository.this.arn
 }
 
 resource "aws_ssm_parameter" "ecr_repository_url" {
-  name  = "/facts/v1/${local.app_name}/ecr_repository_url"
+  name  = "/facts/v1/${var.app_name}/ecr_repository_url"
   type  = "String"
   value = aws_ecr_repository.this.repository_url
 }
 
 resource "aws_ssm_parameter" "s3_bucket_name" {
-  name  = "/facts/v1/${local.app_name}/s3_bucket_name"
+  name  = "/facts/v1/${var.app_name}/s3_bucket_name"
   type  = "String"
   value = aws_s3_bucket.static_assets.bucket
 }
 
 resource "aws_ssm_parameter" "cloudfront_distribution_name" {
-  name  = "/facts/v1/${local.app_name}/cloudfront_distribution_name"
+  name  = "/facts/v1/${var.app_name}/cloudfront_distribution_name"
   type  = "String"
   value = aws_cloudfront_distribution.s3_distribution.id
 }
 
 resource "aws_ssm_parameter" "cloudfront_distribution_arn" {
-  name  = "/facts/v1/${local.app_name}/cloudfront_distribution_arn"
+  name  = "/facts/v1/${var.app_name}/cloudfront_distribution_arn"
   type  = "String"
   value = aws_cloudfront_distribution.s3_distribution.arn
 }
 
 resource "aws_ssm_parameter" "cloudfront_distribution_domain_name" {
-  name  = "/facts/v1/${local.app_name}/cloudfront_distribution_domain_name"
+  name  = "/facts/v1/${var.app_name}/cloudfront_distribution_domain_name"
   type  = "String"
   value = aws_cloudfront_distribution.s3_distribution.domain_name
 }

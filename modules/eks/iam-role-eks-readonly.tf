@@ -1,6 +1,6 @@
 # Resource: AWS IAM Role - EKS Read-Only User
 resource "aws_iam_role" "eks_readonly_role" {
-  name = "${local.cluster_name}-eks-readonly-role"
+  name = "${var.cluster_name}-readonly"
 
   # Terraform's "jsonencode" function converts a
   # Terraform expression result to valid JSON syntax.
@@ -37,21 +37,21 @@ resource "aws_iam_role" "eks_readonly_role" {
             "eks:DescribeAddonVersions"
           ]
           Effect   = "Allow"
-          Resource = "arn:aws:eks:${local.aws_region}:${local.aws_account_id}:cluster/${local.cluster_name}"
+          Resource = "arn:aws:eks:${local.aws_region}:${local.aws_account_id}:cluster/${var.cluster_name}"
         },
       ]
     })
   }
 
   tags = {
-    tag-key = "${local.cluster_name}-eks-readonly-role"
+    tag-key = "${var.cluster_name}-readonly"
   }
 }
 
 # Resource: Cluster Role
 resource "kubernetes_cluster_role_v1" "eksreadonly_clusterrole" {
   metadata {
-    name = "${local.cluster_name}-eksreadonly-clusterrole"
+    name = "${var.cluster_name}-eksreadonly-clusterrole"
   }
   rule {
     api_groups = [""] # These come under core APIs
@@ -74,7 +74,7 @@ resource "kubernetes_cluster_role_v1" "eksreadonly_clusterrole" {
 # Resource: Cluster Role Binding
 resource "kubernetes_cluster_role_binding_v1" "eksreadonly_clusterrolebinding" {
   metadata {
-    name = "${local.cluster_name}-eksreadonly-clusterrolebinding"
+    name = "${var.cluster_name}-eksreadonly-clusterrolebinding"
   }
   role_ref {
     api_group = "rbac.authorization.k8s.io"

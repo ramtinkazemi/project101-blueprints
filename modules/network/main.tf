@@ -4,7 +4,7 @@ module "vpc" {
   version = "5.4.0"
 
   # VPC Basic Details
-  name            = local.vpc_name
+  name            = var.vpc_name
   cidr            = var.cidr_block
   azs             = slice(data.aws_availability_zones.available.names, 0, length(var.private_subnet_cidrs))
   private_subnets = var.private_subnet_cidrs
@@ -46,27 +46,27 @@ module "vpc" {
 
   # Additional Tags to Subnets
   public_subnet_tags = {
-    "Name"                   = "${local.vpc_name}-public"
+    "Name"                   = "${var.vpc_name}-public"
     "tier"                   = "public"
     "kubernetes.io/role/elb" = 1
   }
 
   private_subnet_tags = {
-    "Name"                            = "${local.vpc_name}-private"
+    "Name"                            = "${var.vpc_name}-private"
     "tier"                            = "private"
     "kubernetes.io/role/internal-elb" = 1
   }
 
   tags = merge(
     {
-      "Name" = local.vpc_name
+      "Name" = var.vpc_name
     },
     var.tags
   )
 
   vpc_tags = merge(
     {
-      "Name" = local.vpc_name
+      "Name" = var.vpc_name
     },
     var.tags
   )
@@ -74,7 +74,7 @@ module "vpc" {
 }
 
 resource "aws_cloudwatch_log_group" "vpc_flow_log" {
-  name = "/vpc/flowlog/${local.vpc_name}"
+  name = "/vpc/flowlog/${var.vpc_name}"
 }
 
 resource "aws_flow_log" "vpc_flow_log" {
@@ -102,7 +102,7 @@ resource "aws_vpc_endpoint" "interface_endpoints" {
 }
 
 resource "aws_iam_role" "vpc_flow_log_role" {
-  name = "${local.vpc_name}-flow-log-role"
+  name = "${var.vpc_name}-flow-log-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -119,7 +119,7 @@ resource "aws_iam_role" "vpc_flow_log_role" {
 }
 
 resource "aws_iam_policy" "vpc_flow_log_policy" {
-  name        = "${local.vpc_name}-flow-log-policy"
+  name        = "${var.vpc_name}-flow-log-policy"
   description = "Policy for VPC Flow Logs to publish to CloudWatch Logs"
 
   policy = jsonencode({
@@ -145,25 +145,25 @@ resource "aws_iam_role_policy_attachment" "vpc_flow_log_policy_attachment" {
 
 
 resource "aws_ssm_parameter" "vpc_id" {
-  name  = "/facts/v1/${local.vpc_name}/vpc_id"
+  name  = "/facts/v1/${var.vpc_name}/vpc_id"
   type  = "String"
   value = module.vpc.vpc_id
 }
 
 resource "aws_ssm_parameter" "private_subnet_ids" {
-  name  = "/facts/v1/${local.vpc_name}/private_subnet_ids"
+  name  = "/facts/v1/${var.vpc_name}/private_subnet_ids"
   type  = "StringList"
   value = join(",", module.vpc.private_subnets)
 }
 
 resource "aws_ssm_parameter" "public_subnet_ids" {
-  name  = "/facts/v1/${local.vpc_name}/public_subnet_ids"
+  name  = "/facts/v1/${var.vpc_name}/public_subnet_ids"
   type  = "StringList"
   value = join(",", module.vpc.public_subnets)
 }
 
 resource "aws_ssm_parameter" "availability_zones" {
-  name  = "/facts/v1/${local.vpc_name}/availability_zones"
+  name  = "/facts/v1/${var.vpc_name}/availability_zones"
   type  = "StringList"
   value = join(",", module.vpc.azs)
 }

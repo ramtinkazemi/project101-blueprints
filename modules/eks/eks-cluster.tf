@@ -2,7 +2,7 @@ module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "19.21.0"
 
-  cluster_name    = local.cluster_name
+  cluster_name    = var.cluster_name
   cluster_version = var.cluster_version
 
   vpc_id                   = var.vpc_id
@@ -26,7 +26,7 @@ module "eks" {
   # cluster_security_group_id = data.aws_default_security_group.default.id
 
   create_iam_role = true
-  iam_role_name   = "${local.cluster_name}-role"
+  iam_role_name   = "${var.cluster_name}-role"
 
   cluster_enabled_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
 
@@ -73,7 +73,7 @@ module "eks" {
 
   tags = merge(
     {
-      "Name" = local.cluster_name
+      "Name" = var.cluster_name
     },
     var.tags
   )

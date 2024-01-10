@@ -1,7 +1,7 @@
-variable "name_prefix" {
-  description = "A prefix prepended to all resource names"
-  type        = string
-}
+# variable "name_prefix" {
+#   description = "A prefix prepended to all resource names"
+#   type        = string
+# }
 
 variable "cluster_name" {
   description = "Name of the EKS cluster"

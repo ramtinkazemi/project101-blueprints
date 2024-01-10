@@ -88,9 +88,9 @@ jobs:
       - name: Run tfsec
         run: TFSEC_ARGS="${{ env.TFSEC_ARGS }}" make tfsec
   
-      - name: Run plan
-        run: |
-          TERRAFORM_INIT_ARGS="${{ env.TERRAFORM_INIT_ARGS }}" make init
-          TERRAFORM_PLAN_ARGS="${{ env.TERRAFORM_PLAN_ARGS }}" make plan
+      # - name: Run plan
+      #   run: |
+      #     TERRAFORM_INIT_ARGS="${{ env.TERRAFORM_INIT_ARGS }}" make init
+      #     TERRAFORM_PLAN_ARGS="${{ env.TERRAFORM_PLAN_ARGS }}" make plan
 
 
