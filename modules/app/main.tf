@@ -1,7 +1,7 @@
 # Resource: k8s namespace
 resource "kubernetes_namespace_v1" "this" {
   metadata {
-    name = var.app_name
+    name = "${var.namespace}-${var.env}"
   }
 }
 
@@ -16,9 +16,9 @@ resource "aws_ecr_repository" "this" {
 
 resource "aws_s3_bucket" "static_assets" {
   bucket = "${var.app_name}-static-${local.aws_account_id}-${local.aws_region}"
-  acl    = "public-read"
+  # acl    = "public-read" (Commented out since you're setting public access via the bucket policy)
   versioning {
-    enabled = true
+    enabled = false
   }
   server_side_encryption_configuration {
     rule {
@@ -27,10 +27,11 @@ resource "aws_s3_bucket" "static_assets" {
       }
     }
   }
-  tags = var.tags
+  force_destroy = true
+  tags          = var.tags
 }
 
-resource "aws_s3_bucket_public_access_block" "public_access_block" {
+resource "aws_s3_bucket_public_access_block" "public_access_allow" {
   bucket = aws_s3_bucket.static_assets.id
 
   block_public_acls       = false
@@ -40,9 +41,10 @@ resource "aws_s3_bucket_public_access_block" "public_access_block" {
 }
 
 resource "aws_s3_object" "image" {
-  bucket = aws_s3_bucket.static_assets.bucket
-  key    = "image.jpeg"
-  source = "./image.jpeg"
+  bucket     = aws_s3_bucket.static_assets.bucket
+  key        = "image.jpeg"
+  source     = "./image.jpeg"
+  depends_on = [aws_s3_bucket_public_access_block.public_access_allow]
 }
 
 resource "aws_s3_bucket_policy" "static_assets_policy" {
@@ -59,14 +61,21 @@ resource "aws_s3_bucket_policy" "static_assets_policy" {
         }
       },
       {
-        Action   = "s3:*",
-        Effect   = "Allow",
-        Resource = ["${aws_s3_bucket.static_assets.arn}",
-                    "${aws_s3_bucket.static_assets.arn}/*"
-                  ],
+        Action = "s3:*",
+        Effect = "Allow",
+        Resource = [
+          "${aws_s3_bucket.static_assets.arn}",
+          "${aws_s3_bucket.static_assets.arn}/*"
+        ],
         Principal = {
           AWS = "arn:aws:iam::${local.aws_account_id}:role/gha-oidc-infra-role-${local.aws_region}"
         }
+      },
+      {
+        Action    = "s3:GetObject",
+        Effect    = "Allow",
+        Resource  = "${aws_s3_bucket.static_assets.arn}/*",
+        Principal = "*"
       },
       {
         Action    = "s3:ListBucket",
@@ -74,14 +83,18 @@ resource "aws_s3_bucket_policy" "static_assets_policy" {
         Resource  = aws_s3_bucket.static_assets.arn,
         Principal = "*",
         Condition = {
-          StringNotEquals = {
-            "aws:Referer" : aws_cloudfront_distribution.s3_distribution.domain_name
+          "StringNotEqualsIfExists" : {
+            "aws:Referer" : [aws_cloudfront_distribution.s3_distribution.domain_name]
+          },
+          "ForAnyValue:StringNotLike" : {
+            "aws:PrincipalArn" : ["arn:aws:iam::${local.aws_account_id}:role/gha-oidc-infra-role-${local.aws_region}"]
           }
         }
       }
     ]
   })
 }
+
 
 resource "aws_cloudfront_origin_access_identity" "s3_oai" {
   comment = "OAI for ${aws_s3_bucket.static_assets.bucket}"

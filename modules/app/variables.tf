@@ -1,7 +1,12 @@
-# variable "name_prefix" {
-#   description = "A prefix prepended to all resource names"
-#   type        = string
-# }
+variable "namespace" {
+  description = "Namespace in Terragrunt"
+  type        = string
+}
+
+variable "env" {
+  description = "env in Terragrunt"
+  type        = string
+}
 
 variable "app_name" {
   description = "Name of the application"
@@ -19,17 +24,6 @@ variable "cluster_name" {
   type        = string
   default     = "app"
 }
-
-# variable "image_repository" {
-#   description = "The repository URL of the Docker image"
-#   type        = string
-# }
-
-# variable "image_tag" {
-#   description = "The tag of the Docker image"
-#   type        = string
-#   default = "latest"
-# }
 
 variable "tags" {
   description = "A map of tags to add to all resources"

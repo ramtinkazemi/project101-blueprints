@@ -37,6 +37,8 @@ module "eks" {
 module "app" {
   source       = "./modules/app"
   app_name     = "test"
+  namespace    = "test"
+  env          = "test"
   vpc_id       = module.network.vpc_id
   cluster_name = module.eks.cluster_name
   tags = {
