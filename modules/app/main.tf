@@ -16,7 +16,7 @@ resource "aws_ecr_repository" "this" {
 
 resource "aws_s3_bucket" "static_assets" {
   bucket = "${var.app_name}-static-${local.aws_account_id}-${local.aws_region}"
-  # acl    = "public-read"
+  acl    = "public-read"
   versioning {
     enabled = true
   }
@@ -28,6 +28,15 @@ resource "aws_s3_bucket" "static_assets" {
     }
   }
   tags = var.tags
+}
+
+resource "aws_s3_bucket_public_access_block" "public_access_block" {
+  bucket = aws_s3_bucket.static_assets.id
+
+  block_public_acls       = false
+  ignore_public_acls      = false
+  block_public_policy     = false
+  restrict_public_buckets = false
 }
 
 resource "aws_s3_object" "image" {
@@ -52,7 +61,9 @@ resource "aws_s3_bucket_policy" "static_assets_policy" {
       {
         Action   = "s3:*",
         Effect   = "Allow",
-        Resource = "${aws_s3_bucket.static_assets.arn}*",
+        Resource = ["${aws_s3_bucket.static_assets.arn}",
+                    "${aws_s3_bucket.static_assets.arn}/*"
+                  ],
         Principal = {
           AWS = "arn:aws:iam::${local.aws_account_id}:role/gha-oidc-infra-role-${local.aws_region}"
         }
