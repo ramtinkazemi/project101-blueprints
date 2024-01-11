@@ -1,10 +1,15 @@
 variable "namespace" {
-  description = "Namespace in Terragrunt"
+  description = "The namespace in Terragrunt"
+  type        = string
+}
+
+variable "stack" {
+  description = "The stack in Terragrunt"
   type        = string
 }
 
 variable "env" {
-  description = "env in Terragrunt"
+  description = "The env in Terragrunt"
   type        = string
 }
 

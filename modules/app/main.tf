@@ -1,7 +1,7 @@
 # Resource: k8s namespace
 resource "kubernetes_namespace_v1" "this" {
   metadata {
-    name = "${var.namespace}-${var.env}"
+    name = "${var.stack}-${var.env}"
   }
 }
 
