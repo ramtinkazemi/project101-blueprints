@@ -26,6 +26,6 @@ output "cloudfront_distribution_domain_name" {
 }
 
 output "image_url" {
-  value       = "https://${aws_cloudfront_distribution.s3_distribution.domain_name}/images/image.png"
+  value       = "https://${aws_cloudfront_distribution.s3_distribution.domain_name}/image.jpeg"
   description = "URL of the image served through CloudFront"
 }
