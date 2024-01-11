@@ -23,7 +23,7 @@ resource "aws_iam_role_policy_attachment" "eks_fargate_pod_execution_role_policy
 # Resource: EKS Fargate Profile
 resource "aws_eks_fargate_profile" "fargate_profile" {
   cluster_name           = var.cluster_name
-  fargate_profile_name   = var.app_name
+  fargate_profile_name   = "${var.stack}-${var.env}"
   pod_execution_role_arn = aws_iam_role.fargate_profile_role.arn
   subnet_ids             = data.aws_subnets.private.ids
   selector {
